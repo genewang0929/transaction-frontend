@@ -6,20 +6,19 @@
         <label class="my-auto">User Iban:</label>
       </div>
       <div class="col my-auto">
-        <select class="form-select" aria-label="user">
-          <option selected>Select user</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+        <select v-model="selectedUser" class="form-select" aria-label="user">
+          <option v-for="user in users" :key="user.iban">
+            {{ user.iban }}
+          </option>
         </select>
       </div>
     </div>
-    <button class="btn btn-success m-3">Insert 10 records to the user</button>
-    <button class="btn btn-primary m-3">Get all records of the user</button>
+    <button class="btn btn-success m-3" @click="insertTenRecords">Insert 10 records to the user</button>
+    <button class="btn btn-primary m-3" @click="getUserTransaction(selectedUser, currentPage, CARDS_PER_PAGE)">Get all records of the user</button>
 
     <!-- Cards -->
     <div class="row row-cols-1 row-cols-md-3">
-      <div class="col mb-4" v-for="card in paginatedCards" :key="card.id">
+      <div class="col mb-4" v-for="card in cards" :key="card.id">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ card.description }}</h5>
@@ -48,52 +47,65 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
+import axios from 'axios';
 
+const users = ref([])
+const selectedUser = ref('')
 const cards = ref([])
 const CARDS_PER_PAGE = 12
 const currentPage = ref(1)
+const totalPages = ref(1)
 
-const initCards = () => {
-  let cardObj = {
-    id: 'fbfe820f-f017-4428-93cb-a18af834f4c6',
-    iban: 'MD130V0JGFQUND01H9MJJB0C',
-    description: 'Investment',
-    amountWithCurrency: 'ARS 78',
-    date: '2022-07-12'
+const getAllUsers = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/user')
+    users.value = response.data.transaction
+  } catch (error) {
+    console.error(error)
   }
-  for (let i = 0; i < 20; i++)
-    cards.value.push(cardObj)
 }
 
-const paginatedCards = computed(() => {
-  const startIndex = (currentPage.value - 1) * CARDS_PER_PAGE;
-  const endIndex = startIndex + CARDS_PER_PAGE;
-  return cards.value.slice(startIndex, endIndex);
-})
+const getUserTransaction = async (userIban, currentPage, CARDS_PER_PAGE) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/bankTransaction/${userIban}/${currentPage - 1}/${CARDS_PER_PAGE}`)
+    cards.value = response.data.transactions.content
+    totalPages.value = response.data.transactions.totalPages
+  } catch (error) {
+    console.error(error)
+  }
+}
 
-const totalPages = computed(() => {
-  return Math.ceil(cards.value.length / CARDS_PER_PAGE);
-})
+const insertTenRecords = async () => {
+  try {
+    const response = await axios.post(`http://localhost:8080/bankTransaction?iban=${selectedUser.value}`)
+    console.log(response)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const gotoPage = (pageNumber) => {
   currentPage.value = pageNumber
+  getUserTransaction(selectedUser.value, currentPage.value, CARDS_PER_PAGE)
 }
 
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
   }
+  getUserTransaction(selectedUser.value, currentPage.value, CARDS_PER_PAGE)
 }
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
   }
+  getUserTransaction(selectedUser.value, currentPage.value, CARDS_PER_PAGE)
 }
 
 
-initCards()
+getAllUsers()
 </script>
 
 <style>
