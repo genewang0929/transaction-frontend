@@ -59,7 +59,7 @@ const totalPages = ref(1)
 
 const getAllUsers = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/user')
+    const response = await axios.get(`/api/user`)
     users.value = response.data.transaction
   } catch (error) {
     console.error(error)
@@ -68,7 +68,7 @@ const getAllUsers = async () => {
 
 const getUserTransaction = async (userIban, currentPage, CARDS_PER_PAGE) => {
   try {
-    const response = await axios.get(`http://localhost:8080/bankTransaction/${userIban}/${currentPage - 1}/${CARDS_PER_PAGE}`)
+    const response = await axios.get(`/api/bankTransaction/${userIban}/${currentPage - 1}/${CARDS_PER_PAGE}`)
     cards.value = response.data.transactions.content
     totalPages.value = response.data.transactions.totalPages
   } catch (error) {
@@ -78,7 +78,7 @@ const getUserTransaction = async (userIban, currentPage, CARDS_PER_PAGE) => {
 
 const insertTenRecords = async () => {
   try {
-    const response = await axios.post(`http://localhost:8080/bankTransaction?iban=${selectedUser.value}`)
+    const response = await axios.post(`/api/bankTransaction?iban=${selectedUser.value}`)
     console.log(response)
   } catch (error) {
     console.error(error)

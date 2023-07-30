@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: transaction-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-frontend-deployment
+  labels:
+    app: transaction-frontend
+spec:
+  selector:
+    matchLabels:
+      app: transaction-frontend
+  template:
+    metadata:
+      labels:
+        app: transaction-frontend
+    spec:
+      containers:
+        - name: transaction-frontend
+          image: genewang0929/transaction-frontend:latest
+          ports:
+            - containerPort: 80

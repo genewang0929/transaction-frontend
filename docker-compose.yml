@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  transaction-frontend:
+    build: .
+    ports:
+      - "3000:80"
