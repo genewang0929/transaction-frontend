@@ -1,36 +1,17 @@
-# CircleCI configuration file
-version: 2.1
-
+version: '2.1'
+orbs:
+  node: circleci/node@x.y
 jobs:
-  build:
+  install-node-example:
     docker:
-      - image: cimg/base:2022.05
+      - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Install Dependencies
-          command: npm install
-      - run:
-          name: Build Vue Application
-          command: npm run build
-
-  push_dockerhub:
-    docker:
-      - image: cimg/base:2022.05
-    steps:
-      # - checkout
-      - run: echo "Build and Push Docker Image"
-
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - run: node --version
 workflows:
-  # Name of workflow
-  hello_and_goodbye:
-    # List of jobs that will run
+  test_my_app:
     jobs:
-      - build
-      - push_dockerhub:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - main
+      - install-node-example
