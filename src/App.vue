@@ -78,7 +78,7 @@ const getUserTransaction = async (userIban, currentPage, CARDS_PER_PAGE) => {
 
 const insertTenRecords = async () => {
   try {
-    const response = await axios.post(`/api/bankTransaction?iban=${selectedUser.value}`)
+    await axios.post(`/api/bankTransaction?iban=${selectedUser.value}`)
   } catch (error) {
     console.error(error)
   }
