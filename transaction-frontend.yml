@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: transaction-frontend-service
 spec:
-  type: LoadBalancer
   selector:
     app: transaction-frontend
   ports:
