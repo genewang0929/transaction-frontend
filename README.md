@@ -15,7 +15,7 @@ _Prerequisite: [Docker](https://www.docker.com/get-started/), [minikube](https:/
 
 - Clone the project
 - Open **Docker** and then start the minikube cluster with `minikube start`
-- Apply the `transaction-frontend.yaml` and 'ingress.yaml' files by `kubectl apply -f transaction-frontend.yaml -f ingress.yaml`
+- Apply the `transaction-frontend.yaml` and `ingress.yaml` files by `kubectl apply -f transaction-frontend.yaml -f ingress.yaml`
 - Get your minikube ip by entering `minikube ip` and copy the ip address
 - `sudo vim /etc/host` and set the host name by adding `[MINIKUBE_IP] transaction.com` 
 - Go to [transaction.com](http://transaction.com) and enjoiy :)
